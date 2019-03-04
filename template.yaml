@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    feedback-sentiment-analysis
+Globals:
+    Function:
+        Timeout: 3
+Parameters:
+  BucketNamePrefix:
+    Type: String
+    Default: sam-example
+
+Resources:
+    FeedBackSentimentAnalysis:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: ./feedback-sentiment-analysis/
+            Handler: app.lambda_handler
+            Runtime: python3.7
+            Description: >-
+              Pulls a daily .csv from a specified S3 bucket and performs sentiment analysis on the feedback.
+            Policies:
+              - S3CrudPolicy:
+                  BucketName: !Sub "${BucketNamePrefix}-feedback"
+            Events:
+                CSVPutEvent:
+                    Type: S3
+                    Properties:
+                      Bucket:
+                        Ref: FeedbackBucket
+                      Events:
+                      - 's3:ObjectCreated:*'
+
+    FeedbackBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub "${BucketNamePrefix}-feedback"

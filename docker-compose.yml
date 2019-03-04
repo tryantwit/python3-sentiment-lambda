@@ -1,0 +1,21 @@
+version: '3'
+services:
+  localstack:
+    image: localstack/localstack
+    networks:
+      - sentiment
+    ports:
+      - "4567-4583:4567-4583"
+      - "8080:8080"
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: us-east-1
+      HOSTNAME: localstack
+      EXTERNAL_HOSTNAME: localstack
+      DOCKER_HOST: unix:///var/run/docker.sock
+    volumes:
+      - "/private${TMPDIR}/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  sentiment:
