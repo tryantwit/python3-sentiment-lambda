@@ -4,7 +4,7 @@ Description: >
     feedback-sentiment-analysis
 Globals:
     Function:
-        Timeout: 3
+        Timeout: 6
 Parameters:
   BucketNamePrefix:
     Type: String
