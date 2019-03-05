@@ -12,16 +12,11 @@ s3 = boto3.client('s3',
                     aws_secret_access_key='abc')
 
 def lambda_handler(event, context):
-    print('Received event.')
     bucket = event['Records'][0]['s3']['bucket']['name']
-    print(bucket)
     key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf8')
-    print(key)
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
-        print(response)
         lines = response['Body'].read().decode('utf8').splitlines(True)
-        print(lines)
         csv_reader = csv.DictReader(lines)
         line_count = 0
         for row in csv_reader:
@@ -29,7 +24,6 @@ def lambda_handler(event, context):
                 line_count += 1
             feedback = TextBlob(row['feedback'])
             sentiment = feedback.sentiment
-            print(sentiment)
             if sentiment.polarity < 0:
                 print('{} from {} was NEGATIVE!'.format(row['feedback'], row['username']))
             else:
