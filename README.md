@@ -41,8 +41,14 @@ aws --endpoint_url=http://localhost:4572 s3 cp samples/feedback_01.csv s3://dail
 
 ### Running the lambda
 
+Build the lambda with requirements
+
 ```bash
-sam build --use-container && sam local generate-event s3 put --bucket daily-feedback --key feedback_01.csv | sam local invoke --docker-network feedback-sentiment-analysis_sentiment FeedbackSentimentAnalysis
+sam build -b ./build --user-container -m ./feedback-sentiment-analysis/requirements.txt
+```
+
+```bash
+sam local generate-event s3 put --bucket daily-feedback --key feedback_01.csv | sam local invoke --docker-network feedback-sentiment-analysis_sentiment -t build/template.yaml FeedBackSentimentAnalysis
 ```
 
 The above command is telling sam to build our application against the container in order have textblob available to the lambda.
