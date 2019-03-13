@@ -29,7 +29,7 @@ def lambda_handler(event, context):
         df = pd.read_csv(response['Body'])
         df['sentiment'] = df.apply(calculate_sentiment, axis=1)
 
-        return respond(None, df.to_json)
+        return respond(None, df.to_json(orient = "record"))
     except Exception as e:
         print(e)
         print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
